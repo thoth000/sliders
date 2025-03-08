@@ -350,14 +350,14 @@ def train(
             print("Saving...")
             save_path.mkdir(parents=True, exist_ok=True)
             network.save_weights(
-                save_path / f"{config.save.name}_{i}steps.pt",
+                save_path / f"{config.save.name}_{i}steps.safetensors",
                 dtype=save_weight_dtype,
             )
 
     print("Saving...")
     save_path.mkdir(parents=True, exist_ok=True)
     network.save_weights(
-        save_path / f"{config.save.name}_last.pt",
+        save_path / f"{config.save.name}_last.safetensors",
         dtype=save_weight_dtype,
     )
 
