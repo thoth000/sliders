@@ -99,6 +99,10 @@ For more inference time gradio demos please refer to Cameduru's repo [here](http
 
 ## Running with ControlNet Integration
 Our user community is amazing! Here is the resource that integrates ControlNet: https://github.com/rohitgandikota/sliders/issues/76#issuecomment-2099766893
+
+## NOTE ON LICENSE
+The code and methods behind our work have been released under MIT. However, the models that you use our methods with, might be on a different licenses. Please read the model's license (the model you are using) carefully for more details. 
+
 ## Citing our work
 The preprint can be cited as follows
 ```
