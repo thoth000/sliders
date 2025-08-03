@@ -36,3 +36,15 @@ pip install "accelerate>=0.20.0"
 ```bash
 pip install "transformers>=4.35.0"
 ```
+
+## Notebook Fixes
+
+### XL-sliders-inference.ipynb
+- importエラー解消: `randn_tensor` を削除し、`rescale_noise_cfg` を利用するよう修正
+- `.safetensors` 対応: LoRA重みの読み込みに `safetensors.torch.load_file` ブランチを追加
+- NoneTypeエラー解消: `_get_add_time_ids` に `text_encoder_2.config.projection_dim` を渡すよう修正
+- デバッグ用アサーション追加: `original_size` と `target_size` の値を確認するための `assert` を挿入
+
+### train-flux-concept-sliders.ipynb
+- LoRA読み込み箇所を有効化: コメントアウトされた `load_state_dict` 部分をアンコメントし、`.pt` と `.safetensors` 両対応を追加予定
+
