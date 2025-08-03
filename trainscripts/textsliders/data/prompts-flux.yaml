@@ -10,7 +10,7 @@
   guidance_scale: 3.5
   resolution: 512
   dynamic_resolution: false
-  batch_size: 1
+  batch_size: 4
 - target: "female person" # what word for erasing the positive concept from
   positive: "female person, very young" # concept to erase
   unconditional: "female person, very old" # empty for FLUX
@@ -19,7 +19,7 @@
   guidance_scale: 3.5
   resolution: 512
   dynamic_resolution: false
-  batch_size: 1
+  batch_size: 4
 ####################################################################################################### MUSCULAR SLIDER
 # - target: "male person" # what word for erasing the positive concept from
 #   positive: "male person, muscular, strong, biceps, greek god physique, body builder" # concept to erase

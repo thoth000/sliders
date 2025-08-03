@@ -48,6 +48,23 @@ python trainscripts/textsliders/train_lora.py --attributes 'male, female' --name
 
 `--attributes` argument is used to disentangle concepts from the slider. For instance age slider makes all old people male (so instead add the `"female, male"` attributes to allow disentanglement)
 
+attributesで指定した単語は前置詞として、プロンプトを増幅することになる
+```
+# --attributes 'male, female'を渡す場合
+
+# 元のプロンプト
+- target: male white person
+  positive: male white person, smiling
+
+# 変換後
+# 1つ目: "male"が前置
+- target: male male white person
+  positive: male male white person, smiling
+
+# 2つ目: "female"が前置  
+- target: female male white person
+  positive: female male white person, smiling
+```
 
 #### Evaluate 
 To evaluate your trained models use the notebook `SD1-sliders-inference.ipynb`

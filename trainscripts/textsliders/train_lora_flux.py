@@ -63,7 +63,7 @@ def flush():
 
 
 def import_model_class_from_model_name_or_path(
-    pretrained_model_name_or_path: str, subfolder: str = "text_encoder", device="cuda:0"
+    pretrained_model_name_or_path: str, subfolder: str = "text_encoder", device="cuda"
 ):
     text_encoder_config = PretrainedConfig.from_pretrained(
         pretrained_model_name_or_path, subfolder=subfolder, device_map=device
@@ -228,7 +228,7 @@ def compute_text_embeddings(prompt, text_encoders, tokenizers, max_sequence_leng
     return prompt_embeds, pooled_prompt_embeds, text_ids
 
 
-def get_sigmas(timesteps, noise_scheduler_copy, n_dim=4, device='cuda:0', dtype=torch.bfloat16):
+def get_sigmas(timesteps, noise_scheduler_copy, n_dim=4, device='cuda', dtype=torch.bfloat16):
     sigmas = noise_scheduler_copy.sigmas.to(device=device, dtype=dtype)
     schedule_timesteps = noise_scheduler_copy.timesteps.to(device)
     timesteps = timesteps.to(device)
@@ -307,7 +307,7 @@ def train(
         pretrained_model_name_or_path,
         subfolder="vae",
         torch_dtype=weight_dtype,
-        device_map='auto'
+        device_map=device
     )
     transformer = FluxTransformer2DModel.from_pretrained(
         pretrained_model_name_or_path, 
