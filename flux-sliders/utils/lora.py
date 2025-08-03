@@ -50,14 +50,16 @@ TRAINING_METHODS = Literal[
 ]
 
 def load_ortho_dict(n):
-    path = f'~/orthogonal_basis/{n:09}.ckpt'
+    # expand user home and ensure directory exists
+    path = os.path.expanduser(f'~/orthogonal_basis/{n:09}.ckpt')
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     if os.path.isfile(path):
         return torch.load(path)
-    else:
-        x = torch.randn(n,n)
-        eig, _, _ = torch.svd(x)
-        torch.save(eig, path)
-        return eig
+    # create new orthogonal basis and save
+    x = torch.randn(n, n)
+    eig, _, _ = torch.svd(x)
+    torch.save(eig, path)
+    return eig
 
 def init_ortho_proj(rank, weight):
     seed = torch.seed()
