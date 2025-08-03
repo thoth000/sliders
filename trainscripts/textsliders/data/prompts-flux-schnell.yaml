@@ -1,0 +1,45 @@
+# FLUX.1-schnell Concept Sliders Prompts
+# Optimized for the faster Schnell model
+
+####################################################################################################### SMILING SLIDER
+- target: "picture of a person"
+  positive: "photo of a person, smiling, happy"
+  unconditional: ""
+  neutral: "photo of a person, frowning"
+  action: "enhance"
+  guidance_scale: 0  # Schnell doesn't use guidance
+  resolution: 512
+  dynamic_resolution: false
+  batch_size: 1
+
+- target: "portrait of a man"
+  positive: "portrait of a man, smiling, cheerful"
+  unconditional: ""
+  neutral: "portrait of a man, frowning, sad"
+  action: "enhance"
+  guidance_scale: 0
+  resolution: 512
+  dynamic_resolution: false
+  batch_size: 1
+
+- target: "portrait of a woman"
+  positive: "portrait of a woman, smiling, cheerful"
+  unconditional: ""
+  neutral: "portrait of a woman, frowning, sad"
+  action: "enhance"
+  guidance_scale: 0
+  resolution: 512
+  dynamic_resolution: false
+  batch_size: 1
+
+####################################################################################################### STYLE SLIDER
+# Uncomment to train style slider
+# - target: "image of a cat"
+#   positive: "artistic painting of a cat, oil painting style"
+#   unconditional: ""
+#   neutral: "realistic photo of a cat, photographic"
+#   action: "enhance"
+#   guidance_scale: 0
+#   resolution: 512
+#   dynamic_resolution: false
+#   batch_size: 1

@@ -29,7 +29,7 @@ class NetworkConfig(BaseModel):
 
 class TrainConfig(BaseModel):
     precision: PRECISION_TYPES = "bfloat16"
-    noise_scheduler: Literal["ddim", "ddpm", "lms", "euler_a"] = "ddim"
+    noise_scheduler: Literal["ddim", "ddpm", "lms", "euler_a", "flow_match_euler_discrete"] = "ddim"
 
     iterations: int = 500
     lr: float = 1e-4
@@ -38,6 +38,19 @@ class TrainConfig(BaseModel):
     lr_scheduler: str = "constant"
 
     max_denoising_steps: int = 50
+    
+    # FLUX specific parameters
+    height: Optional[int] = 512
+    width: Optional[int] = 512
+    max_sequence_length: Optional[int] = 512
+    num_inference_steps: Optional[int] = 30
+    guidance_scale: Optional[float] = 3.5
+    weighting_scheme: Optional[str] = "none"
+    logit_mean: Optional[float] = 0.0
+    logit_std: Optional[float] = 1.0
+    mode_scale: Optional[float] = 1.29
+    batch_size: Optional[int] = 1
+    eta: Optional[float] = 2
 
 
 class SaveConfig(BaseModel):

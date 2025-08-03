@@ -64,6 +64,13 @@ python trainscripts/textsliders/train_lora_xl.py --attributes 'male, female' --n
 To evaluate your trained models use the notebook `XL-sliders-inference.ipynb`
 
 
+### Training FLUX
+To train sliders for FLUX.dev, use the script `train_lora_flux.py`.
+
+```
+python trainscripts/textsliders/train_lora_flux.py --attributes 'male, female' --name 'agesliderFLUX' --rank 4 --alpha 1 --config_file 'trainscripts/textsliders/data/config-flux.yaml'
+```
+
 ## Visual Concept Sliders
 ### Training SD-1.x and SD-2.x LoRa
 To train image based sliders, you need to create a ~4-6 pairs of image dataset (before/after edit for desired concept). Save the before images and after images separately. You can also create a dataset with varied intensity effect and save them differently. 
