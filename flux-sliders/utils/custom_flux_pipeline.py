@@ -364,8 +364,16 @@ class FluxPipeline(DiffusionPipeline, FluxLoraLoaderMixin):
                 unscale_lora_layers(self.text_encoder_2, lora_scale)
 
         dtype = self.text_encoder.dtype if self.text_encoder is not None else self.transformer.dtype
-        text_ids = torch.zeros(batch_size, prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
-        text_ids = text_ids.repeat(num_images_per_prompt, 1, 1)
+        
+        # Handle txt_ids based on batch size to avoid deprecation warning
+        effective_batch_size = batch_size * num_images_per_prompt
+        if effective_batch_size == 1:
+            # New FLUX API for batch_size=1 expects 2D tensor (sequence_length, 3)
+            text_ids = torch.zeros(prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
+        else:
+            # For batch_size > 1, keep original 3D format (batch_size, sequence_length, 3)
+            text_ids = torch.zeros(batch_size, prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
+            text_ids = text_ids.repeat(num_images_per_prompt, 1, 1)
 
         return prompt_embeds, pooled_prompt_embeds, text_ids
 
@@ -425,10 +433,18 @@ class FluxPipeline(DiffusionPipeline, FluxLoraLoaderMixin):
 
         latent_image_id_height, latent_image_id_width, latent_image_id_channels = latent_image_ids.shape
 
-        latent_image_ids = latent_image_ids[None, :].repeat(batch_size, 1, 1, 1)
-        latent_image_ids = latent_image_ids.reshape(
-            batch_size, latent_image_id_height * latent_image_id_width, latent_image_id_channels
-        )
+        # For new FLUX API, handle batch dimension based on batch_size
+        if batch_size == 1:
+            # New FLUX API for batch_size=1 expects 2D tensor (height*width, 3)
+            latent_image_ids = latent_image_ids.reshape(
+                latent_image_id_height * latent_image_id_width, latent_image_id_channels
+            )
+        else:
+            # For batch_size > 1, keep original 3D format (batch_size, height*width, 3)
+            latent_image_ids = latent_image_ids[None, :].repeat(batch_size, 1, 1, 1)
+            latent_image_ids = latent_image_ids.reshape(
+                batch_size, latent_image_id_height * latent_image_id_width, latent_image_id_channels
+            )
 
         return latent_image_ids.to(device=device, dtype=dtype)
 

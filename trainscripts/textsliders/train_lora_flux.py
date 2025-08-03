@@ -203,8 +203,15 @@ def encode_prompt(
         text_input_ids=text_input_ids_list[1] if text_input_ids_list else None,
     )
 
-    text_ids = torch.zeros(batch_size, prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
-    text_ids = text_ids.repeat(num_images_per_prompt, 1, 1)
+    # Handle text_ids based on batch size to avoid deprecation warning
+    effective_batch_size = batch_size * num_images_per_prompt
+    if effective_batch_size == 1:
+        # New FLUX API for batch_size=1 expects 2D tensor (sequence_length, 3)
+        text_ids = torch.zeros(prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
+    else:
+        # For batch_size > 1, keep original 3D format (batch_size, sequence_length, 3)
+        text_ids = torch.zeros(batch_size, prompt_embeds.shape[1], 3).to(device=device, dtype=dtype)
+        text_ids = text_ids.repeat(num_images_per_prompt, 1, 1)
 
     return prompt_embeds, pooled_prompt_embeds, text_ids
 
@@ -455,6 +462,18 @@ def train(
     positive_embeds = prompt_embeddings[0]['positive'] 
     negative_embeds = prompt_embeddings[0]['negative']
 
+    # Fix for new FLUX API: ensure txt_ids have correct shape for training
+    def fix_txt_ids_shape(embeds):
+        prompt_embeds, pooled_embeds, txt_ids = embeds
+        if txt_ids.dim() == 3 and txt_ids.shape[0] == 1:
+            # Convert 3D (1, seq_len, 3) to 2D (seq_len, 3) for batch_size=1
+            txt_ids = txt_ids.squeeze(0)
+        return prompt_embeds, pooled_embeds, txt_ids
+
+    target_embeds = fix_txt_ids_shape(target_embeds)
+    positive_embeds = fix_txt_ids_shape(positive_embeds)
+    negative_embeds = fix_txt_ids_shape(negative_embeds)
+
     for i in pbar:
         optimizer.zero_grad()
 
@@ -514,6 +533,12 @@ def train(
             device,
             weight_dtype,
         ) if FluxPipeline is not None else None
+
+        # Fix for new FLUX API: ensure img_ids has correct shape
+        if latent_image_ids is not None:
+            # If it's 3D and batch_size=1, convert to 2D to avoid deprecation warning
+            if latent_image_ids.dim() == 3 and latent_image_ids.shape[0] == 1:
+                latent_image_ids = latent_image_ids.squeeze(0)  # Remove batch dimension
 
         # Handle guidance
         if transformer.config.guidance_embeds:
